@@ -1,0 +1,21 @@
+from socket import *
+from _thread import *
+
+s = socket((AF_INET) , SOCK_STREAM)
+
+
+host = "127.0.0.1"
+port = 8000
+
+s.connect((host , port))
+
+
+def recvThread(s):
+	while True:
+		print("server : ", s.recv(1204).decode('utf-8'))
+
+start_new_thread(recvThread , (s,))
+
+
+while True:
+	s.send(input().encode('utf-8'))
