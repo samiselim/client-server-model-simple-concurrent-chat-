@@ -1,27 +1,37 @@
-from socket import *
+from socket import * 
 from _thread import *
+from tkinter import *
 
-s = socket((AF_INET) , SOCK_STREAM)
+
+s = socket((AF_INET) , SOCK_STREAM) 
+
 host = "127.0.0.1"
 port = 8000
 
 s.bind((host , port))
 
-s.listen(5)
+s.listen(5) 
+
+
+sessions = []
+
+def Clicked():
+	message = "Server : " + entry.get()
+	for c in sessions:
+		c.send(message.encode('utf-8'))
+	entry.delete(0 , END)
+
 
 def recvThread(c,ad):
 	while True:
-		x=c.recv(1024).decode('utf-8')
-		print(ad[1] , " : " , x)
-
-def sendThread(c,ad):
-	while True:
-		c.send(input().encode('utf-8'))
+		L1["text"]= str(ad[1]) +" : " + c.recv(1024).decode('utf-8')
+		
 
 while True:
 	c , ad = s.accept()
-	print("new connection from" , ad[1])
-	start_new_thread(sendThread , (c,ad))
+	message = "New connection from " + ad[1]
+	for session in sessions:
+		session.send(message.encode('utf-8'))
+	sessions.append(c)
 	start_new_thread(recvThread , (c,ad))
 
-	
